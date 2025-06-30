@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Table Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      
+    }
+    textarea, input, select {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    textarea#output {
+      height: 250px;
+    }
+  </style>
+</head>
+<body></body>
+
+<h2>HTML Link Generator</h2>
+
+  <label for="linkText">Text to display as link:</label>
+  <input type="text" id="linkText" placeholder="e.g. Click here">
+
+  <label for="linkURL">URL to link to:</label>
+  <input type="text" id="linkURL" placeholder="e.g. https://example.com">
+
+  <button onclick="generateCode()">Generate Link</button>
+
+  <label for="output">Generated Link:</label>
+  <textarea id="output" readonly style="height: 30px;"></textarea>
+
+  <button onclick="copyCode()">Copy to Clipboard</button>
+
+  <button onclick="generateCode()">Generate HTML</button>
+
+
+  <script>
+
+    // for link generateCode
+
+    function generateCode() {
+      const text = document.getElementById("linkText").value;
+      const url = document.getElementById("linkURL").value;
+      const html = `<a style="white-space: nowrap;padding:0;margin:0" target="_blank" href="${url}">${text}</a>`;
+      document.getElementById("output").value = html;
+    }
+
+    function copyCode() {
+      const output = document.getElementById("output");
+      output.select();
+      document.execCommand("copy");
+      alert("Copied to clipboard!");
+    }
+  </script>
+</body>
+</html>
