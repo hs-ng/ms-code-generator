@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Table Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      
+    }
+    textarea, input, select {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    textarea#output {
+      height: 250px;
+    }
+  </style>
+</head>
+<body>
+    
+  <h2>HTML Table Generator</h2>
+
+  <label>Background Color:</label>
+  <input type="text" id="bgColor" value="#d5e4f9">
+
+  <label>Border Radius:</label>
+  <input type="text" id="radius" value="12px">
+
+  <label>Padding (e.g. 10px 20px):</label>
+  <input type="text" id="padding" value="10px 20px">
+
+  <label>Content Type:</label>
+  <select id="contentType">
+    <option value="list">List</option>
+    <option value="paragraph">Paragraph</option>
+    <option value="custom">Raw HTML</option>
+  </select>
+
+  <label>Content (each line is a new list item or paragraph):</label>
+  <textarea id="contentInput" rows="8">Lorem ipsum dolor sit amet...
+Lorem ipsum dolor sit amet...
+Lorem ipsum dolor sit amet...</textarea>
+
+  <label>Include Image?</label>
+  <select id="includeImage">
+    <option value="no">No</option>
+    <option value="above">Yes - Above Content</option>
+    <option value="below">Yes - Below Content</option>
+  </select>
+
+  <label>Image URL:</label>
+  <input type="text" id="imgUrl" placeholder="https://example.com/image.jpg">
+
+  <label>Image Width:</label>
+  <input type="text" id="imgWidth" value="100px">
+
+  <label>Alt Text:</label>
+  <input type="text" id="imgAlt" value="Image description">
+
+  <label>Image Alignment:</label>
+  <select id="imgAlign">
+    <option value="center">Center</option>
+    <option value="left">Left</option>
+    <option value="right">Right</option>
+  </select>
+
+  <label>Include Button?</label>
+  <select id="includeButton">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+
+  <label>Button Text:</label>
+  <input type="text" id="btnText" value="Click Here">
+
+  <label>Button URL:</label>
+  <input type="text" id="btnUrl" placeholder="https://example.com">
+
+  <label>Button Color:</label>
+  <input type="text" id="btnColor" value="#007BFF">
+
+  <label>Button Text Color:</label>
+<input type="text" id="btnTextColor" value="#ffffff">
+
+  <label>Button Alignment:</label>
+  <select id="btnAlign">
+  <option value="center">Center</option>
+  <option value="left">Left</option>
+  <option value="right">Right</option>
+</select>
+
+
+  <button onclick="generateCode()">Generate HTML</button>
+
+  <h3>Generated Code:</h3>
+  <textarea id="output" readonly></textarea>
+
+
+
+  <script>
+    function generateCode() {
+      const bgColor = document.getElementById("bgColor").value;
+      const radius = document.getElementById("radius").value;
+      const padding = document.getElementById("padding").value;
+      const contentType = document.getElementById("contentType").value;
+      const items = document.getElementById("contentInput").value
+        .split('\n')
+        .map(i => i.trim())
+        .filter(i => i !== '');
+
+      const includeImage = document.getElementById("includeImage").value;
+      const imgUrl = document.getElementById("imgUrl").value.trim();
+      const imgWidth = document.getElementById("imgWidth").value.trim();
+      const imgAlt = document.getElementById("imgAlt").value.trim();
+      const imgAlign = document.getElementById("imgAlign").value;
+
+      const includeButton = document.getElementById("includeButton").value;
+      const btnText = document.getElementById("btnText").value.trim();
+      const btnUrl = document.getElementById("btnUrl").value.trim();
+      const btnColor = document.getElementById("btnColor").value.trim();
+      const btnTextColor = document.getElementById("btnTextColor").value.trim();
+      const btnAlign = document.getElementById("btnAlign").value;
+
+
+      // Image alignment logic
+      let alignStyle = "0 auto 15px auto"; // center default
+      if (imgAlign === "left") alignStyle = "0 auto 15px 0";
+      else if (imgAlign === "right") alignStyle = "0 0 15px auto";
+
+      let imageHTML = "";
+      if (includeImage !== "no" && imgUrl) {
+        imageHTML = `<img src="${imgUrl}" alt="${imgAlt}" style="width: ${imgWidth}; display: block; margin: ${alignStyle};">`;
+      }
+
+    // Button HTML
+let buttonHTML = ""; // <-- declare it first
+let textAlignStyle = "center";
+if (btnAlign === "left") textAlignStyle = "left";
+else if (btnAlign === "right") textAlignStyle = "right";
+
+if (includeButton === "yes") {
+  buttonHTML = `
+    <div style="text-align: ${textAlignStyle}; margin-top: 20px;">
+      <a href="${btnUrl}" target="_blank" style="background-color: ${btnColor}; color: ${btnTextColor}; text-decoration: none; padding: 10px 20px; border-radius: 6px; display: inline-block;">${btnText}</a>
+    </div>`;
+}
+
+
+
+      // Content generation
+let contentHTML = "";
+
+if (contentType === "list") {
+  const listHTML = items.map(i => `<li>${i}</li>`).join('\n');
+  contentHTML = `<ul style="padding-left: 15px">\n${listHTML}\n</ul>`;
+} else if (contentType === "paragraph") {
+  const paraHTML = items.map(i => `<p style="margin: 0 0 0px 0;">${i}</p>`).join('\n');
+  contentHTML = paraHTML;
+} else if (contentType === "custom") {
+  // Treat the whole textarea as raw HTML
+  contentHTML = document.getElementById("contentInput").value.trim();
+}
+
+if (includeImage === "above") {
+  contentHTML = `${imageHTML}\n${contentHTML}`;
+} else if (includeImage === "below") {
+  contentHTML = `${contentHTML}\n${imageHTML}`;
+}
+
+contentHTML = `${contentHTML}\n${buttonHTML}`;
+
+
+      const tableHTML = `
+  <table style="width: 100%; border-collapse: collapse; background-color: ${bgColor}; text-align: left; border-radius: ${radius}">
+  <tbody>
+    <tr>
+      <td style="padding: ${padding}">
+        ${contentHTML}
+      </td>
+    </tr>
+  </tbody>
+</table>`.trim();
+
+      document.getElementById("output").value = tableHTML;
+    }
+
+   
+  </script>
+</body>
+</html>
