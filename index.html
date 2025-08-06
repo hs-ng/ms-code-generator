@@ -32,11 +32,11 @@
   </style>
 </head>
 <body>
-<div style="display: flex; gap: 20px;">
+<!-- <div style="display: flex; gap: 20px;">
   <a href="https://hs-ng.github.io/ms-code-generator/link-generator" target="_blank">Go to Link generator</a>
   <a href="https://www.htmltables.io/" target="_blank">Go to Table Generator</a>
 </div>
-    
+     -->
   <h2>HTML Table Generator</h2>
 
   <label>Background Color:</label>
@@ -49,11 +49,12 @@
   <input type="text" id="padding" value="10px 20px">
 
   <label>Content Type:</label>
-  <select id="contentType">
-    <option value="list">List</option>
-    <option value="paragraph">Paragraph</option>
-    <option value="custom">Raw HTML</option>
-  </select>
+<select id="contentType">
+  <option value="list">List</option>
+   <option value="ordered">Ordered List</option> <!-- <-- NEW -->
+  <option value="paragraph">Paragraph</option>
+  <option value="custom">Raw HTML</option>
+</select>
 
   <label>Content (each line is a new list item or paragraph):</label>
   <textarea id="contentInput" rows="8">Lorem ipsum dolor sit amet...
@@ -167,18 +168,23 @@ if (includeButton === "yes") {
 
 
       // Content generation
+// Content generation
 let contentHTML = "";
 
 if (contentType === "list") {
   const listHTML = items.map(i => `<li>${i}</li>`).join('\n');
-  contentHTML = `<ul style="padding-left: 15px">\n${listHTML}\n</ul>`;
+  contentHTML = `<ul style="padding-left: 15px; font-size: 14px">\n${listHTML}\n</ul>`;
 } else if (contentType === "paragraph") {
   const paraHTML = items.map(i => `<p style="margin: 0 0 0px 0;">${i}</p>`).join('\n');
   contentHTML = paraHTML;
 } else if (contentType === "custom") {
   // Treat the whole textarea as raw HTML
   contentHTML = document.getElementById("contentInput").value.trim();
+} else if (contentType === "ordered") {
+  const orderedHTML = items.map(i => `<li>${i}</li>`).join('\n');
+  contentHTML = `<ol style="padding-left: 15px; font-size: 14px">\n${orderedHTML}\n</ol>`;
 }
+
 
 if (includeImage === "above") {
   contentHTML = `${imageHTML}\n${contentHTML}`;
