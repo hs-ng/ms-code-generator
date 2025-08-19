@@ -56,6 +56,23 @@
   <option value="custom">Raw HTML</option>
 </select>
 
+<label>List Style Type:</label>
+<select id="listStyle">
+  <option value="default">Default</option>
+  <option value="disc">Disc ●</option>
+  <option value="circle">Circle ○</option>
+  <option value="square">Square ■</option>
+  <option value="decimal">Numbers 1,2,3</option>
+  <option value="upper-roman">Roman I, II, III</option>
+  <option value="lower-alpha">Alphabet a, b, c</option>
+  <option value="custom">Custom (Emoji / Text)</option>
+</select>
+
+
+<label>Custom Marker (only if chosen "Custom"):</label>
+<input type="text" id="customMarker" placeholder="✅ / 🎁">
+<p>example:✅  🎁  🔥 </p>
+
   <label>Content (each line is a new list item or paragraph):</label>
   <textarea id="contentInput" rows="8">Lorem ipsum dolor sit amet...
 Lorem ipsum dolor sit amet...
@@ -118,6 +135,9 @@ Lorem ipsum dolor sit amet...</textarea>
 
 
   <script>
+
+    
+
     function generateCode() {
       const bgColor = document.getElementById("bgColor").value;
       const radius = document.getElementById("radius").value;
@@ -127,6 +147,9 @@ Lorem ipsum dolor sit amet...</textarea>
         .split('\n')
         .map(i => i.trim())
         .filter(i => i !== '');
+
+      const listStyle = document.getElementById("listStyle").value;
+      const customMarker = document.getElementById("customMarker").value.trim();
 
       const includeImage = document.getElementById("includeImage").value;
       const imgUrl = document.getElementById("imgUrl").value.trim();
@@ -172,18 +195,30 @@ if (includeButton === "yes") {
 let contentHTML = "";
 
 if (contentType === "list") {
-  const listHTML = items.map(i => `<li>${i}</li>`).join('\n');
-  contentHTML = `<ul style="padding-left: 15px; font-size: 14px">\n${listHTML}\n</ul>`;
-} else if (contentType === "paragraph") {
-  const paraHTML = items.map(i => `<p style="margin: 0 0 0px 0;">${i}</p>`).join('\n');
-  contentHTML = paraHTML;
-} else if (contentType === "custom") {
-  // Treat the whole textarea as raw HTML
-  contentHTML = document.getElementById("contentInput").value.trim();
+  if (listStyle === "custom" && customMarker) {
+    // Use custom emoji/text marker directly in <ul> style
+    contentHTML = `<ul style="padding-left: 0; font-size: 14px; list-style-type: '${customMarker} ';">\n` +
+      items.map(i => `<li>${i}</li>`).join('\n') +
+      `\n</ul>`;
+  } else {
+    // Normal list-style-type
+    const listHTML = items.map(i => `<li>${i}</li>`).join('\n');
+    const styleType = listStyle === "default" ? "" : `list-style-type:${listStyle};`;
+    contentHTML = `<ul style="padding-left: 15px; font-size: 14px; ${styleType}">\n${listHTML}\n</ul>`;
+  }
 } else if (contentType === "ordered") {
-  const orderedHTML = items.map(i => `<li>${i}</li>`).join('\n');
-  contentHTML = `<ol style="padding-left: 15px; font-size: 14px">\n${orderedHTML}\n</ol>`;
+  if (listStyle === "custom" && customMarker) {
+    // Ordered list with custom marker
+    contentHTML = `<ol style="padding-left: 0; font-size: 14px; list-style-type: '${customMarker} ';">\n` +
+      items.map(i => `<li>${i}</li>`).join('\n') +
+      `\n</ol>`;
+  } else {
+    const orderedHTML = items.map(i => `<li>${i}</li>`).join('\n');
+    const styleType = listStyle === "default" ? "" : `list-style-type:${listStyle};`;
+    contentHTML = `<ol style="padding-left: 15px; font-size: 14px; ${styleType}">\n${orderedHTML}\n</ol>`;
+  }
 }
+
 
 
 if (includeImage === "above") {
@@ -209,7 +244,10 @@ contentHTML = `${contentHTML}\n${buttonHTML}`;
       document.getElementById("output").value = tableHTML;
     }
 
+    
+
    
   </script>
 </body>
 </html>
+
