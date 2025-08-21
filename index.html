@@ -197,7 +197,7 @@ let contentHTML = "";
 if (contentType === "list") {
   if (listStyle === "custom" && customMarker) {
     // Use custom emoji/text marker directly in <ul> style
-    contentHTML = `<ul style="padding-left: 15px; font-size: 14px; list-style-type: '${customMarker} ';">\n` +
+    contentHTML = `<ul style="padding-left: 20px; font-size: 14px; list-style-type: '${customMarker} ';">\n` +
       items.map(i => `<li>${i}</li>`).join('\n') +
       `\n</ul>`;
   } else {
@@ -209,7 +209,7 @@ if (contentType === "list") {
 } else if (contentType === "ordered") {
   if (listStyle === "custom" && customMarker) {
     // Ordered list with custom marker
-    contentHTML = `<ol style="padding-left: 15px; font-size: 14px; list-style-type: '${customMarker} ';">\n` +
+    contentHTML = `<ol style="padding-left: 20px; font-size: 14px; list-style-type: '${customMarker} ';">\n` +
       items.map(i => `<li>${i}</li>`).join('\n') +
       `\n</ol>`;
   } else {
